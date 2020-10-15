@@ -1,0 +1,19 @@
+{
+  "name": "kafka-notify-consumer",
+  "version": "1.0.0",
+  "description": "A kafka consumer that process notification",
+  "author": "Anthony Hastings <ar.hastings@gmail.com> (https://antwan1986.github.io/)",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node consumer_second.js"
+  },
+  "dependencies": {
+    "avsc": "5.3.1",
+    "axios": "latest",
+    "kafka-node": "2.6.1",
+    "moment": "2.22.2",
+    "nodemailer": "latest",
+    "uuid": "3.3.2"
+  }
+}

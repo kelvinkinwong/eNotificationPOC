@@ -1,0 +1,19 @@
+{
+  "name": "kafka-database-consumer",
+  "version": "1.0.0",
+  "description": "A kafka consumer that inserts data into PostgreSQL.",
+  "author": "Anthony Hastings <ar.hastings@gmail.com> (https://antwan1986.github.io/)",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node consumer_first.js"
+  },
+  "dependencies": {
+    "avsc": "5.3.1",
+    "body-parser": "1.18.3",    
+    "kafka-node": "2.6.1",
+    "moment": "2.22.2",
+    "uuid": "3.3.2",
+    "mongoose": "^4.13.2"
+  }
+}

@@ -1,0 +1,64 @@
+version: "3"
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: kafka-nodejs-example-zookeeper
+    ports:
+      - 2181:2181
+  kafka:
+    image: wurstmeister/kafka:2.11-1.1.0
+    container_name: kafka-nodejs-example-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_CREATE_TOPICS: document-event-notify:1:1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    ports:
+      - 9092:9092
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - db-data:/Users/kelvinwong/data
+  producer:
+    build: ./services/producer
+    container_name: kafka-event-producer
+    command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -wait tcp://db:27017 npm start"
+    depends_on:
+      - zookeeper
+      - kafka
+      - db
+    environment:
+      MONGO_CONNECT: mongodb://db/Eventdb
+      PRODUCER_PORT: ${PRODUCER_PORT}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    ports:
+      - ${PRODUCER_PORT}:${PRODUCER_PORT}
+  consumer_first:
+    build: ./services/consumer_first
+    container_name: kafka-database-consumer
+    command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -wait tcp://db:27017 npm start"
+    depends_on:
+      - zookeeper
+      - kafka
+      - db
+    environment:
+      MONGO_CONNECT: mongodb://db/Eventdb
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  consumer_second:
+    build: ./services/consumer_second
+    container_name: kafka-notify-consumer
+    command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 npm start"
+    depends_on:
+      - zookeeper
+      - kafka
+    environment:
+      SHORTEN_URL_PROVIDER_API: https://api.promptapi.com/short_url/hash
+      SHORTEN_URL_API_KEY: ${SHORTENER_API_KEY}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+volumes:
+   db-data:
