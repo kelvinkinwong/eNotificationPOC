@@ -96,3 +96,19 @@ Upon first run, this last command should return JSON containing the event posted
 For consumer 2 in consumer group 2,
 
 Check if the notification email is received about the shortened URL of the original URL.
+
+## Deployment upon code changes
+
+Step 1: 
+docker-compose down
+
+Step 2:
+docker images
+- List out all the images currently in local docker repository
+
+Step 3:
+docker rmi <IMAGE_ID_OF_YOUR_CHANGED_REPOSITORY>
+- In this project, it is either kafka-nodejs-example_consumer_first, kafka-nodejs-example_consumer_second or kafka-nodejs-example_producer
+
+Step 4:
+docker-compose up
